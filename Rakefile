@@ -8,7 +8,7 @@ require "rake/gempackagetask"
 
 NAME = "curl_ftp"
 SUMMARY = "Interact with FTP servers via curl"
-GEM_VERSION = "0.1.2"
+GEM_VERSION = "0.1.3"
 
 spec = Gem::Specification.new do |s|
   s.name = NAME

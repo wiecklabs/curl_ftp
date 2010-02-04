@@ -104,7 +104,7 @@ module CurlFtp
 
       return false unless exists?(path)
 
-      curl(@root, "-Q \"RMDIR #{path}\" -I")
+      curl(@root, "-Q \"RMD #{path}\" -I")
 
       true
     end
