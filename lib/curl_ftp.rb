@@ -53,7 +53,6 @@ module CurlFtp
 
     def exists?(path)
       path = File.join(@pwd, path)
-      exists = false
 
       if File.extname(path) == ""
         # To check for existence of directories, they must have a trailing slash.
@@ -62,24 +61,23 @@ module CurlFtp
         root = @root + path
       end
 
-      results = curl(root, '-I ')
+      curl(root, '-I ')
 
-      exists = !!results['Accept-ranges']
+      true
     rescue CurlExecutionError
       raise unless [9, 19].include?($!.error_code)
-      exists = false
-    ensure
-      exists
+
+      return false
     end
 
     def mkdir(path)
       path = File.join(@pwd, path)
 
-      return true if exists?(path)
+      return false if exists?(path)
 
-      result = curl(@root, "-Q \"MKD #{path}\" -I")
+      curl(@root, "-Q \"MKD #{path}\" -I")
 
-      !!result['Accept-ranges']
+      true
     end
 
     def mkdir_p(path)
@@ -94,19 +92,21 @@ module CurlFtp
         components.pop
       end
 
-      return true if folders_to_create.empty?
+      return false if folders_to_create.empty?
 
-      result = curl(@root, folders_to_create.map { |folder| "-Q \"MKD #{folder}\"" }.join(" ") + " -I")
+      curl(@root, folders_to_create.map { |folder| "-Q \"MKD #{folder}\"" }.join(" ") + " -I")
 
-      !!result['Accept-ranges']
+      true
     end
 
     def rmdir(path)
       path = File.join(@pwd, path)
-      return true unless exists?(path)
-      result = curl(@root, "-Q \"RMDIR #{path}\" -I")
 
-      !!result['Accept-ranges']
+      return false unless exists?(path)
+
+      curl(@root, "-Q \"RMDIR #{path}\" -I")
+
+      true
     end
 
     def rm(path)
